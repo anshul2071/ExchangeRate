@@ -54,14 +54,13 @@ https://api.exchangerate-api.com/v4/latest/{FROM_CURRENCY}
 ```json
 {
   "base": "USD",
-  "date": "2024-02-20",
+  "date": "2024-02-28",
   "rates": {
-    "NPR": 137.95,
-    "EUR": 0.89,
-    "INR": 83.30
+    "NPR": 140.17,
+    "EUR": 1.04,
+    "INR": 87.35
   }
 }
-```
 
 ## How to Run
 
