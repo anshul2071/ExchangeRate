@@ -1,49 +1,83 @@
-const btn = document.querySelector("#btn");
-const fromCurr = document.querySelector("#from-currency");
-const toCurr = document.querySelector("#to-currency");
-const resultMsg = document.querySelector("#conversion-result");
-const amountInput = document.querySelector("#amount");
-const fromFlag = document.querySelector("#from-flag");
-const toFlag = document.querySelector("#to-flag");
+const dropdowns = document.querySelectorAll(".dropdown select");
+const btn = document.querySelector("form button");
+const fromCurr = document.querySelector(".from select");
+const toCurr = document.querySelector(".to select");
 
-// Update flag when currency changes
-const updateFlag = (element, flagElement) => {
-    let currencyCode = element.value;
-    let countryCode = element.getAttribute("data-country"); // Assuming you have country codes in HTML
-    flagElement.src = `https://flagsapi.com/${countryCode}/flat/64.png`;
+// Populate dropdowns with currency options to populate the dropdown with currencycode
+for (let select of dropdowns) {
+    for (currCode in countryList) {
+        let newOption = document.createElement("option");
+        newOption.innerText = currCode;
+        newOption.value = currCode;
+        
+        // Set default selected currencies
+        if (select.name === "from" && currCode === "USD") {
+            newOption.selected = "selected";
+        } else if (select.name === "to" && currCode === "NPR") {
+            newOption.selected = "selected";
+        }
+        
+        select.append(newOption);
+    }
+
+    // Update flag on currency change using eventlistener change as the country on the select dropdown changes the flag is updated accordingly
+    select.addEventListener("change", (evt) => {
+        updateFlag(evt.target);
+    });
+}
+
+// Function to update flags based on selected currency which is used by even listener above.
+const updateFlag = (element) => {
+    let currCode = element.value;
+    let countryCode = countryList[currCode];  // Use country list to get country code
+    let img = element.parentElement.querySelector("img");
+    let newSrc = `https://flagsapi.com/${countryCode}/flat/64.png`;
+    img.src = newSrc;
 };
 
-fromCurr.addEventListener("change", () => updateFlag(fromCurr, fromFlag));
-toCurr.addEventListener("change", () => updateFlag(toCurr, toFlag));
 
-// Convert currency when button is clicked
+
+
+//button with eventlistener click which triggers the coversion based on below code
+
+
+
 btn.addEventListener("click", async (evt) => {
     evt.preventDefault();
+    
+    let amount = document.querySelector(".amount input");
+    let amtVal = amount.value;
 
-    let amtVal = amountInput.value;
+    // If the amount is empty or less than 1, set it to 1
     if (amtVal === "" || amtVal < 1) {
         amtVal = 1;
-        amountInput.value = "1";
+        amount.value = "1";
     }
+
+    // Logging selected currencies (for debugging)
+    console.log(fromCurr.value, toCurr.value);
 
     const BASE_URL = "https://api.exchangerate-api.com/v4/latest";
     const URL = `${BASE_URL}/${fromCurr.value.toUpperCase()}`;
 
     try {
+        // Fetch exchange rate data
         let response = await fetch(URL);
         let data = await response.json();
+        console.log(data);
 
+        // Check if the target currency is available
         if (data.rates[toCurr.value.toUpperCase()]) {
             let rate = data.rates[toCurr.value.toUpperCase()];
             let convertedAmount = (amtVal * rate).toFixed(2);
 
-            // Show result on the screen
+            // Show result on the screen rather than on the console
+            let resultMsg = document.querySelector("#conversion-result");
             resultMsg.innerText = `${amtVal} ${fromCurr.value} = ${convertedAmount} ${toCurr.value}`;
         } else {
-            resultMsg.innerText = "Invalid currency selection";
+            console.error("Invalid currency selection");
         }
     } catch (error) {
-        resultMsg.innerText = "Error fetching exchange rates!";
         console.error("Error fetching exchange rates:", error);
     }
 });
