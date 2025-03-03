@@ -26,8 +26,8 @@ This is a simple web-based currency converter that allows users to convert curre
 📦 Currency Converter
 ├── 📜 index.html          # Main HTML file
 ├── 📜 styles.css          # CSS file for styling
-├── 📜 code.js             # JavaScript file handling logic
-├── 📜 FetchApi.js         # JavaScript file for API fetching
+├── 📜 code.js             # JavaScript file handling logic consisting of countrycode for different currency and flags
+├── 📜 FetchApi.js         # JavaScript file for API fetching with all the main functionality
 ├── 📜 README.md           # Project documentation
 ```
 
